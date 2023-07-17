@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom"
 import { Home } from "./pages/Home/IndexHome"
-import { History } from "./pages/History"
+import { History } from "./pages/History/IndexHistory"
 import { IndexLayout } from "./layouts/DefaultLayouts/IndexLayout"
 
 export function Router(){

@@ -24,11 +24,11 @@ export const HeaderContainer = styled.header`
             transition: all.5s;
 
             &:hover{
-                border-bottom: 3px solid ${props => props.theme['red-default']};
+                border-bottom: 3px solid ${props => props.theme['red-500']};
             }
 
             &.active{
-                color: ${props => props.theme['red-default']};
+                color: ${props => props.theme['red-500']};
             }
         }
     }
