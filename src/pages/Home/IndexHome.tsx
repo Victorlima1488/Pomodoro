@@ -2,21 +2,45 @@
 import { Play } from "phosphor-react"; 
 import { CountdownContainer, FormContainer, HomeContainer, MinutesAmountInput, Separator, StartCountdownButton, TaskInput } from "./IndexStyle";
 
-// Importação de um hook personalizado que é ultilizado para gerenciamneto de dormulários.
+// Importação de um hook personalizado que é ultilizado para gerenciamneto de formulários.
 import { useForm } from 'react-hook-form'
+
+// Importação da biblioteca zod, que é integrada ao react-hook-form e serve para validação de formulários no react com base nos esquemas zod.
+// Ela tem uma grande conectividade com o TypeScript.
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod'
+
+// Aqui temos o esquema de validação do forms usando o zod para garantir que os valores inseridos nos campos 'task' e 'minutesAmount' atendem
+// às regras estabelexidas antes de prosseguir com algum procedimento.
+const newCycleFormValidationSchema = zod.object({
+    task: zod.string().min(1, 'Informe a tarefa'),
+    minutesAmount: zod
+    .number()
+    .min(5, 'O ciclo precisa ser de no mínimo 5 minutos.')
+    .max(60, 'O ciclo precisa ser de no mínimo 5 minutos.'),
+})
+
+type newCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 
 export function Home(){
 
-    // desestruturação de funções nativas do hook useForm, sendo respectivamente a variável que armazena
+    // Desestruturação de funções nativas do hook useForm, sendo respectivamente a variável que armazena
     // o estado atual do componente, a função de alteração da variável de armazenamento e uma função que monitora
     // em tempo real o estado do componente que foi passasdo como parâmetro.
-    const {register, handleSubmit, watch} = useForm()
+    const {register, handleSubmit, watch, reset} = useForm<newCycleFormData>({
+        resolver: zodResolver(newCycleFormValidationSchema),
+        defaultValues:{
+            task: '',
+            minutesAmount: 0,
+        }
+    })
 
-    function handleCreateNewCycle(data: any){
+    function handleCreateNewCycle(data: newCycleFormData){
         console.log(data)
+        reset()
     }
 
-    // monitoramento do componente TaskInput para validação do disabled no butão de submit do form.
+    // Monitoramento do componente TaskInput para validação do disabled no butão de submit do form.
     const task = watch('task')
     const isSubmitDisabled = !task
 
@@ -52,7 +76,7 @@ export function Home(){
                         // O atributo step significa que o valor o input do tipo número vai pular de 5 em 5.
                         step={5}
                         min={5}
-                        max={60}
+                        // max={60} 
                         {...register('minutesAmount', {valueAsNumber: true})}
                     />
                     <span>minutos.</span>
