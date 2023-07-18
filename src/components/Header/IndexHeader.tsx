@@ -1,7 +1,8 @@
 import { HeaderContainer } from "./StylesHeader";
-
 import logoPomodoro from "../../assets/tomato-svgrepo-com.svg"
 import { Timer, Scroll } from "phosphor-react";
+
+// Importação do componente NavLink que ser ve para criar links de navegação entre diferentes rotas.
 import { NavLink } from "react-router-dom";
 
 export function Header(){

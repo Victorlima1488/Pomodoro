@@ -2,7 +2,7 @@ import styled from "styled-components"
 
 export const HistoryContainer = styled.main`
     flex: 1;
-    padding: 3.5rem;
+    padding: 1rem 3.5rem;
 
     display: flex;
     flex-direction: column;
@@ -15,6 +15,8 @@ export const HistoryContainer = styled.main`
 
 export const HistoryList = styled.div`
     flex: 1;
+
+    // Para que haja scroll lateral no mobile.
     overflow: auto;
     margin-top: 2rem;
 
@@ -60,7 +62,7 @@ export const HistoryList = styled.div`
         }
     }
 `
-
+// O as const garante que os valores das propriedades vão ser sempre literalmente os que estão escreitos. Do contrário, os valores seriam somente strings, e poderiam ser qualquer uma.
 const STATUS_COLORS = {
     yellow: 'yellow-500',
     green: 'green-500',
