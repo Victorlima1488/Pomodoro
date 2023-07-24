@@ -1,32 +1,47 @@
 // Importação da bíblioteca de icones para componentes React.
-import { Play } from "phosphor-react"; 
+import { Play } from "phosphor-react"
 import { CountdownContainer, FormContainer, HomeContainer, MinutesAmountInput, Separator, StartCountdownButton, TaskInput } from "./IndexStyle";
 
-// Importação de um hook personalizado que é ultilizado para gerenciamneto de formulários.
+// Importação de um hook personalizado que é ultilizado para gerenciamento de formulários.
 import { useForm } from 'react-hook-form'
 
 // Importação da biblioteca zod, que é integrada ao react-hook-form e serve para validação de formulários no react com base nos esquemas zod.
 // Ela tem uma grande conectividade com o TypeScript.
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as zod from 'zod'
+import {z} from 'zod'
+
+import { useState } from "react"
 
 // Aqui temos o esquema de validação do forms usando o zod para garantir que os valores inseridos nos campos 'task' e 'minutesAmount' atendem
 // às regras estabelexidas antes de prosseguir com algum procedimento.
-const newCycleFormValidationSchema = zod.object({
-    task: zod.string().min(1, 'Informe a tarefa'),
-    minutesAmount: zod
+const newCycleFormValidationSchema = z.object({
+    task: z.string().min(1, 'Informe a tarefa'),
+    minutesAmount: z
     .number()
     .min(5, 'O ciclo precisa ser de no mínimo 5 minutos.')
     .max(60, 'O ciclo precisa ser de no mínimo 5 minutos.'),
 })
 
-type newCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
+type newCycleFormData = z.infer<typeof newCycleFormValidationSchema>
+
+interface Cycle {
+    id: string
+    task: string
+    minutesAmount: number
+}
 
 export function Home(){
 
+    // Armazena os novos ciclos dentro do array cycles.
+    const [cycles, setCycles] = useState<Cycle[]>([])
+
+    // Armazena qual é o ciclo ativo naquele momento, e se tem algum ciclo ativo.
+    const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+    const [amountSecondsPast, setAmountSecondsPast] = useState(0)
+
     // Desestruturação de funções nativas do hook useForm, sendo respectivamente a variável que armazena
     // o estado atual do componente, a função de alteração da variável de armazenamento e uma função que monitora
-    // em tempo real o estado do componente que foi passasdo como parâmetro.
+    // em tempo real o estado do componente que foi passasdo como parâmetro e  reset limpa os campos registrados.
     const {register, handleSubmit, watch, reset} = useForm<newCycleFormData>({
         resolver: zodResolver(newCycleFormValidationSchema),
         defaultValues:{
@@ -35,10 +50,35 @@ export function Home(){
         }
     })
 
+    // Função que inicia um novo ciclo e limpa os campos dos Inputs.
     function handleCreateNewCycle(data: newCycleFormData){
-        console.log(data)
+        const id = String(new Date().getTime())
+
+
+
+        const newCycle: Cycle = {
+            id,
+            task: data.task,
+            minutesAmount: data.minutesAmount,
+        }
+
+        setCycles(state => [...state, newCycle])
+        setActiveCycleId(id)
+
         reset()
     }
+
+    // Faz o mapeamento e retorna qual o ciclo dentro do array cycles que está ativo.
+    const activeCycle = cycles.find(cycle => cycle.id === activeCycleId)
+
+    const TotalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
+    const currentSeconds = activeCycle ? TotalSeconds - amountSecondsPast : 0
+
+    const minutesAmount = Math.floor(currentSeconds / 60)
+    const secondsAmount = currentSeconds % 60
+
+    const minutes = String(minutesAmount).padStart(2, '0')
+    const seconds = String(secondsAmount).padStart(2, '0')
 
     // Monitoramento do componente TaskInput para validação do disabled no butão de submit do form.
     const task = watch('task')
@@ -58,6 +98,8 @@ export function Home(){
 
                         // Dá sugestões no input com base no que é passado nas options da tag datalist.
                         list="task-suggestions"
+
+                        // O register registra o input no react hook form, permitindo que ele rastreie e gerencie as alterações feitas nesse campo.
                         {...register('task')}
                     />
 
@@ -76,18 +118,18 @@ export function Home(){
                         // O atributo step significa que o valor o input do tipo número vai pular de 5 em 5.
                         step={5}
                         min={5}
-                        // max={60} 
+                        max={60} 
                         {...register('minutesAmount', {valueAsNumber: true})}
                     />
                     <span>minutos.</span>
                 </FormContainer>
                 
                 <CountdownContainer>
-                    <span>0</span>
-                    <span>0</span>
+                    <span>{minutes[0]}</span>
+                    <span>{minutes[1]}</span>
                     <Separator>:</Separator>
-                    <span>0</span>
-                    <span>0</span>
+                    <span>{seconds[0]}</span>
+                    <span>{seconds[1]}</span>
                 </CountdownContainer>
 
                 <StartCountdownButton disabled={isSubmitDisabled} type="submit">
