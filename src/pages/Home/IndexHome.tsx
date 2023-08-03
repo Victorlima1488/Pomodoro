@@ -8,9 +8,11 @@ import { useForm } from 'react-hook-form'
 // Importação da biblioteca zod, que é integrada ao react-hook-form e serve para validação de formulários no react com base nos esquemas zod.
 // Ela tem uma grande conectividade com o TypeScript.
 import { zodResolver } from '@hookform/resolvers/zod'
-import {z} from 'zod'
+import { z } from 'zod'
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+import { differenceInSeconds } from 'date-fns'
 
 // Aqui temos o esquema de validação do forms usando o zod para garantir que os valores inseridos nos campos 'task' e 'minutesAmount' atendem
 // às regras estabelexidas antes de prosseguir com algum procedimento.
@@ -28,6 +30,7 @@ interface Cycle {
     id: string
     task: string
     minutesAmount: number
+    startDate: Date
 }
 
 export function Home(){
@@ -50,6 +53,17 @@ export function Home(){
         }
     })
 
+     // Faz o mapeamento e retorna qual o ciclo dentro do array cycles que está ativo.
+     const activeCycle = cycles.find(cycle => cycle.id === activeCycleId)
+
+    useEffect(() => {
+        if(activeCycle) {
+            setInterval(() =>{
+                setAmountSecondsPast(differenceInSeconds(new Date(), activeCycle.startDate))
+            }, 1000)
+        }
+    }, [activeCycle])
+
     // Função que inicia um novo ciclo e limpa os campos dos Inputs.
     function handleCreateNewCycle(data: newCycleFormData){
         const id = String(new Date().getTime())
@@ -60,6 +74,7 @@ export function Home(){
             id,
             task: data.task,
             minutesAmount: data.minutesAmount,
+            startDate: new Date(),
         }
 
         setCycles(state => [...state, newCycle])
@@ -67,9 +82,6 @@ export function Home(){
 
         reset()
     }
-
-    // Faz o mapeamento e retorna qual o ciclo dentro do array cycles que está ativo.
-    const activeCycle = cycles.find(cycle => cycle.id === activeCycleId)
 
     const TotalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
     const currentSeconds = activeCycle ? TotalSeconds - amountSecondsPast : 0
