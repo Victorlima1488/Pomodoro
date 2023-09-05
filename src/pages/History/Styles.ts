@@ -7,6 +7,8 @@ export const HistoryContainer = styled.main`
     display: flex;
     flex-direction: column;
 
+    overflow-y: auto;
+
     h1{
         font-size: 1.5rem;
         color: ${props => props.theme['gray-100']};
@@ -18,7 +20,11 @@ export const HistoryList = styled.div`
 
     // Para que haja scroll lateral no mobile.
     overflow: auto;
-    margin-top: 2rem;
+    margin-top: 1rem;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 
     table{
         width: 100%;

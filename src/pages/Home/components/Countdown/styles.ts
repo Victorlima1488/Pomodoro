@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const CountdownContainer = styled.div`
     font-family: 'Roboto Mono', monospace;
     font-size: 10rem;
-    line-height: 8rem;
+    line-height: 6rem;
     color: ${props => props.theme['gray-100']};
 
     display: flex;
@@ -11,7 +11,7 @@ export const CountdownContainer = styled.div`
 
     span{
         background: ${props => props.theme['gray-700']};
-        padding: 2rem 1rem;
+        padding: 1.8rem 1rem;
         border-radius: 8px;
     }
 `
