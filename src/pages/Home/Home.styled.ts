@@ -1,8 +1,6 @@
 import styled from "styled-components"
 
 export const HomeContainer = styled.main`
-
-    // Flex 1 é a forma abreviada de definir três pripriedades relacionadas: flex-grow, flex-shrink, flex-basis. 
     flex: 1;
 
     display: flex;

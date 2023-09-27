@@ -68,7 +68,7 @@ export const HistoryList = styled.div`
         }
     }
 `
-// O as const garante que os valores das propriedades vão ser sempre literalmente os que estão escreitos. Do contrário, os valores seriam somente strings, e poderiam ser qualquer uma.
+// O as const garante que os valores das propriedades vão ser sempre literalmente os que estão escritos. Do contrário, os valores seriam somente strings, e poderiam ser qualquer uma.
 const STATUS_COLORS = {
     yellow: 'yellow-500',
     green: 'green-500',

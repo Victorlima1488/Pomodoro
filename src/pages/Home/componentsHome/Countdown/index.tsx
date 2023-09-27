@@ -5,7 +5,7 @@ import { CycleContext } from '../../../../contexts/CycleContext'
 
 export function Countdown(){
 
-    const { activeCycle, activeCycleId, amountSecondsPast, markCurrentCycleAsFinished, setSecondsPasseds } = useContext(CycleContext)
+    const { activeCycle, activeCycleId, amountSecondsPast,  markCurrentCycleAsFinished, setSecondsPasseds } = useContext(CycleContext)
 
     const TotalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
     const currentSeconds = activeCycle ? TotalSeconds - amountSecondsPast : 0
@@ -19,7 +19,7 @@ export function Countdown(){
 
         if(activeCycle) {
             interval = setInterval(() =>{
-                const secondsDifference = differenceInSeconds(new Date(), activeCycle.startDate)
+                const secondsDifference = differenceInSeconds(new Date(), new Date(activeCycle.startDate))
                 
                 if(secondsDifference >= TotalSeconds){
                     markCurrentCycleAsFinished()
@@ -39,6 +39,9 @@ export function Countdown(){
     useEffect(() => {
         if(activeCycle){
             document.title = `${minutes}:${seconds}`
+        }
+        else{
+            document.title = `Pomorodo`
         }
     }, [minutes, seconds])
     
